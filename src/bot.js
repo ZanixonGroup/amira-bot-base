@@ -5,8 +5,7 @@ import {
     makeWASocket,
     useMultiFileAuthState,
     DisconnectReason,
-    makeInMemoryStore,
-    jidNormalizedUser
+    makeInMemoryStore
 } from "@whiskeysockets/baileys";
 import Pino from "pino";
 import { Boom } from "@hapi/boom";
@@ -37,7 +36,7 @@ async function start() {
   }
   
   global.client = client;
-  await loadEvents(client, "Events");
+  await loadEvents(client, "events");
   const Commands = await loadCommands("commands");
   
   // session manager
