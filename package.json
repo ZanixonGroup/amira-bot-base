@@ -1,12 +1,22 @@
 {
-  "name": "collab",
-  "version": "1.0.0",
-  "description": ".",
-  "main": "bot.js",
+  "name": "amira-bot",
+  "version": "0.0.8",
+  "description": "Whatsapp bot assitant",
   "type": "module",
+  "main": "bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "new": "node index.js --pairing"
   },
   "author": "ZanixonGroup",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.6.0",
+    "colors": "^1.4.0",
+    "glob": "^10.3.12",
+    "moment-timezone": "^0.5.45",
+    "path": "^0.12.7",
+    "util": "^0.12.5"
+  }
 }
