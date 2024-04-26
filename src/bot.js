@@ -34,7 +34,10 @@ async function start() {
       console.log(">", "Pairing Code:".info, pairingCode.warn);
     }, 30000);
   }
+<<<<<<< HEAD
   global.client = client;
+=======
+>>>>>>> refs/remotes/origin/master
   await loadEvents(client, "Events");
   
   // session manager
