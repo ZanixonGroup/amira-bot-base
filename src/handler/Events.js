@@ -9,11 +9,11 @@ async function loadEvents(client, eventsDirectory, logs) {
     const directory = path.join(global.dirname, eventsDirectory);
     const files = glob.sync(`${directory}/**/*.js`);
     files.forEach(async (file) => {
-      const event = await import(file);
-      console.log(event, file)
-      if(!event.default.name) return;
+      const baseEvent = await import(file);
+      const event = baseEvent.default;
+      if(!event.name) return;
       
-      const { name, code } = event.default;
+      const { name, code } = event;
       try {
         client.ev.on(name, code);
       } catch (e) {

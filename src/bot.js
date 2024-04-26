@@ -1,5 +1,6 @@
 import "./config.js";
 import loadEvents from "./handler/Events.js";
+import loadCommands from "./handler/Commands.js";
 import {
     makeWASocket,
     useMultiFileAuthState,
@@ -34,8 +35,10 @@ async function start() {
       console.log(">", "Pairing Code:".info, pairingCode.warn);
     }, 30000);
   }
+  
   global.client = client;
   await loadEvents(client, "Events");
+  const Commands = await loadCommands("commands");
   
   // session manager
   client.ev.on("creds.update", auth.saveCreds);
@@ -85,6 +88,7 @@ async function start() {
       console.log(global.clock.info, "[Session]".main, "Client connected on:", (client?.user?.id.split(":")[0] || global.botNumber).info);
     }
   });
+  
 }
 
 start()
