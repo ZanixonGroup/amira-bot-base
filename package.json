@@ -1,6 +1,6 @@
 {
   "name": "amira-bot",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "description": "Whatsapp bot assitant",
   "type": "module",
   "main": "bot.js",
@@ -13,10 +13,22 @@
   "license": "ISC",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.6.0",
+    "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12",
     "colors": "^1.4.0",
+    "crypto": "^1.0.1",
+    "file-type": "^19.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "form-data": "^4.0.0",
+    "fs": "^0.0.1-security",
     "glob": "^10.3.12",
+    "jimp": "^0.16.13",
+    "mime-types": "^2.1.35",
     "moment-timezone": "^0.5.45",
+    "node-webpmux": "^3.2.0",
+    "os": "^0.1.2",
     "path": "^0.12.7",
+    "url": "^0.11.3",
     "util": "^0.12.5"
   }
 }

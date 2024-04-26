@@ -1,6 +1,7 @@
 import "./config.js";
 import loadEvents from "./handler/Events.js";
 import loadCommands from "./handler/Commands.js";
+import { BindClient } from "./libs/serialize.js"
 import {
     makeWASocket,
     useMultiFileAuthState,
@@ -22,7 +23,11 @@ async function start() {
     auth: auth.state,
     logger: Pino({ level: "fatal" }).child({ level: "fatal" })
   });
+  global.client = client;
+  
+  // bindings
   store.bind(client.ev);
+  await BindClient({client, store});
   
   // pairing login
   if(isPairing && !client.authState.creds.registered) {
@@ -35,7 +40,6 @@ async function start() {
     }, 30000);
   }
   
-  global.client = client;
   await loadEvents(client, "events");
   const Commands = await loadCommands("commands");
   

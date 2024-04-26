@@ -16,7 +16,6 @@ async function loadCommands(commandsDirectory, logs) {
         command: command?.command,
         code: command?.code ? command?.code : () => {}
       };
-      console.log(command)
       Commands.set(command?.name, options);
     })
     return Commands;
