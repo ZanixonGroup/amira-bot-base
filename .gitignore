@@ -1,0 +1,9 @@
+node_modules
+session
+.npm
+.cache
+yarn.lock
+package-lock.json
+temp
+tmp
+database
