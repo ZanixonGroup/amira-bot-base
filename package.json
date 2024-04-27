@@ -1,6 +1,6 @@
 {
   "name": "amira-bot",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Whatsapp bot assitant",
   "type": "module",
   "main": "bot.js",
