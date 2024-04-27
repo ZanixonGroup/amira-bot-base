@@ -24,7 +24,7 @@ async function loadCommands(commandsDirectory, logs) {
             nonPrefix: command?.nonPrefix ? command?.nonPrefix : false,
         },
         disable: {
-        	status: ? command?.disable?.status ? command?.disable?.status : false,
+        	status: command?.disable?.status ? command?.disable?.status : false,
             message: command?.disable?.message ? command?.disable?.message : false,
         },
         code: command?.code ? command?.code : () => {}
