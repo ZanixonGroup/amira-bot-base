@@ -12,7 +12,7 @@ global.bot = {
   antiCall: true,
   owner: ["6285697103902", "6289520306297", "6283897390164"],
   sessionName: "session",
-  prefix: /^[/]/i
+  prefix: /^[.]/i
 }
 global.clock = moment().tz("Asia/Jakarta").format("DD-MM-YY HH:mm:ss");
 

@@ -18,7 +18,7 @@ async function imageToWebp(media) {
       ff(tmpFileIn)
          .on("error", reject)
          .on("end", () => resolve(true))
-         //.addOutputOptions([`-vcodec`,`libwebp`,`-vf`,`scale=512:512:force_original_aspect_ratio=increase,fps=15,crop=512:512`]).toFormat('webp').save(tmpFileOut)
+         .addOutputOptions([`-vcodec`,`libwebp`,`-vf`,`scale=512:512:force_original_aspect_ratio=increase,fps=15,crop=512:512`]).toFormat('webp').save(tmpFileOut)
          .addOutputOptions([
             "-vcodec",
             "libwebp",

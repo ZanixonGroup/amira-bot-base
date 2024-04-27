@@ -23,11 +23,12 @@ async function start() {
     auth: auth.state,
     logger: Pino({ level: "fatal" }).child({ level: "fatal" })
   });
-  global.client = client;
   
   // bindings
   store.bind(client.ev);
   await BindClient({client, store});
+  global.client = client;
+  global.store = store;
   
   // pairing login
   if(isPairing && !client.authState.creds.registered) {

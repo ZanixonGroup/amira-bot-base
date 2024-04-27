@@ -1,11 +1,11 @@
-export default {
+export default [{
   name: "test",
   command: ["test","tes"],
-  code: async({ client }) => {
+  code: async({ client, m }) => {
     try {
-      console.log("Command test triggered!")
+      m.reply("work coy!")
     } catch (e) {
       console.log(e)
     }
   }
-}
+}]

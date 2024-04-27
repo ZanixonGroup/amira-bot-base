@@ -276,7 +276,7 @@ export async function Serialize(client, msg) {
       m.msg = extractMessageContent(m.message[m.type]) || m.message[m.type]
       m.mentions = m.msg?.contextInfo?.mentionedJid || []
       m.body = m.msg?.text || m.msg?.conversation || m.msg?.caption || m.message?.conversation || m.msg?.selectedButtonId || m.msg?.singleSelectReply?.selectedRowId || m.msg?.selectedId || m.msg?.contentText || m.msg?.selectedDisplayText || m.msg?.title || m.msg?.name || ""
-      m.prefix = global.bot.prefix.test(m.body) ? m.body.match(global.bot.prefix)[0] : "#"
+      m.prefix = global.bot.prefix.test(m.body) ? m.body.match(global.bot.prefix)[0] : ""
       m.command = m.body && m.body.replace(m.prefix, '').trim().split(/ +/).shift()
       m.arg = m.body.trim().split(/ +/).filter(a => a) || []
       m.args = m.body.trim().replace(new RegExp("^" + Function.escapeRegExp(m.prefix), 'i'), '').replace(m.command, '').split(/ +/).filter(a => a) || []
@@ -285,11 +285,11 @@ export async function Serialize(client, msg) {
       m.timestamp = (typeof msg.messageTimestamp === "number" ? msg.messageTimestamp : msg.messageTimestamp.low ? msg.messageTimestamp.low : msg.messageTimestamp.high) || m.msg.timestampMs * 1000
       m.isMedia = !!m.msg?.mimetype || !!m.msg?.thumbnailDirectPath
       if (m.isMedia) {
-         m.mime = m.msg?.mimetype
+         m.mimetype = m.msg?.mimetype
          m.size = m.msg?.fileLength
          m.height = m.msg?.height || ""
          m.width = m.msg?.width || ""
-         if (/webp/i.test(m.mime)) {
+         if (/webp/i.test(m.mimetype)) {
             m.isAnimated = m.msg?.isAnimated
          }
       }
@@ -358,11 +358,11 @@ export async function Serialize(client, msg) {
          m.quoted.text = m.quoted.args.join(" ")
          m.quoted.isMedia = !!m.quoted.msg?.mimetype || !!m.quoted.msg?.thumbnailDirectPath
          if (m.quoted.isMedia) {
-            m.quoted.mime = m.quoted.msg?.mimetype
+            m.quoted.mimetype = m.quoted.msg?.mimetype
             m.quoted.size = m.quoted.msg?.fileLength
             m.quoted.height = m.quoted.msg?.height || ''
             m.quoted.width = m.quoted.msg?.width || ''
-            if (/webp/i.test(m.quoted.mime)) {
+            if (/webp/i.test(m.quoted.mimetype)) {
                m.quoted.isAnimated = m?.quoted?.msg?.isAnimated || false
             }
          }
