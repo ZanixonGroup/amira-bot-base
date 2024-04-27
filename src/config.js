@@ -56,6 +56,5 @@ global.alertMessage = {
   wait: "Wait a minute...",
   urlInvalid: "Url Invalid",
   notFound: "Result Not Found!",
-  premium: "Premium Only Features!",
-  vip: "VIP Only Features!"
+  premium: "Premium Only Features!"
 }
