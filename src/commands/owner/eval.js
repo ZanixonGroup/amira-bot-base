@@ -9,6 +9,7 @@ export default [{
     },
     code: async({
       // client
+      Commands,
       client,
       rawMessage,
       m,
@@ -47,7 +48,13 @@ export default [{
       commandName,
       command,
       commandOptions,
-      isCommand
+      isCommand,
+      
+      // additional properties
+      __dirname,
+      
+      // additional modules
+      MessageCollector
     }) => {
         let evalCmd
         try {

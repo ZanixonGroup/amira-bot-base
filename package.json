@@ -1,6 +1,6 @@
 {
   "name": "amira-bot",
-  "version": "0.2.10",
+  "version": "0.2.16",
   "description": "Whatsapp bot assitant",
   "type": "module",
   "main": "bot.js",
@@ -12,8 +12,9 @@
   "author": "ZanixonGroup",
   "license": "ISC",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.6.0",
+    "@whiskeysockets/baileys": "^6.7.0",
     "axios": "^1.6.8",
+    "baileys": "^6.7.0",
     "cheerio": "^1.0.0-rc.12",
     "colors": "^1.4.0",
     "crypto": "^1.0.1",

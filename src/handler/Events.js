@@ -2,11 +2,13 @@ import "./../config.js";
 import * as glob from "glob";
 import path from "path";
 import util from "util";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const Events = new Map();
 async function loadEvents(client, eventsDirectory, logs) {
   try {
-    const directory = path.join(global.dirname, eventsDirectory);
+    const directory = path.join(__dirname, "..", eventsDirectory);
     const files = glob.sync(`${directory}/**/*.js`);
     files.forEach(async (file) => {
       const baseEvent = await import(file);

@@ -1,6 +1,14 @@
 import loadCommands from "./../handler/Commands.js";
 import { Serialize } from "./../libs/serialize.js"
+import Cooldown from "./../libs/CooldownManager.js"
+import Func from "./../libs/function.js";
 import util from "util";
+import path from "path";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// import additional modules
+import MessageCollector from "./../handler/MessageCollector.js";
 
 export default {
   name: "messages.upsert",
@@ -66,8 +74,16 @@ export default {
         if(!command) return; // check command has null value
         if(!isCommand) return; // check message is a valid command
         
+        // cooldown manager 
+        if(command?.cooldown?.status) {
+          const cooldown = new Cooldown(m, command?.cooldown?.duration);
+          // on cooldown
+          if(cooldown.onCooldown) return m.reply(`${command?.cooldown?.message.replace("{time}", cooldown.timeFormatted)}`);
+        }
+        
         const options = {
           // client
+          Commands,
           client,
           rawMessage,
           m,
@@ -106,7 +122,13 @@ export default {
           commandName,
           command,
           commandOptions,
-          isCommand
+          isCommand,
+          
+          // additional properties
+          __dirname,
+          
+          // additional modules
+          MessageCollector
         }
         command.code(options);
       } catch (e) {

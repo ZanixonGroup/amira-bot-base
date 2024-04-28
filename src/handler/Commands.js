@@ -2,11 +2,13 @@ import "./../config.js";
 import * as glob from "glob";
 import path from "path";
 import util from "util";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const Commands = new Map();
 async function loadCommands(commandsDirectory, logs) {
   try {
-    const directory = path.join(global.dirname, commandsDirectory);
+    const directory = path.join(__dirname, "..", commandsDirectory);
     const files = glob.sync(`${directory}/**/*.js`);
     files.forEach(async (file) => {
       const baseCommand = await import(file);
@@ -26,7 +28,12 @@ async function loadCommands(commandsDirectory, logs) {
           },  
           disable: {
           	status: command?.disable?.status ? command?.disable?.status : false,
-            message: command?.disable?.message ? command?.disable?.message : false,
+            message: command?.disable?.message ? command?.disable?.message : "This command is currently disabled!",
+          },
+          cooldown: {
+            status: command?.cooldown?.status ? command?.cooldown?.status : false,
+            duration: command?.cooldown?.duration ? command?.cooldown?.duration : 0,
+            message: command?.cooldown?.message ? command?.cooldown?.message : "Please wait *_{time}_* to run this command again!"
           },
           code: command?.code ? command?.code : () => {}
         };

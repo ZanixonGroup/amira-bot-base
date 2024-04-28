@@ -10,9 +10,9 @@ class MessageCollector {
   #event;
   #messageCount;
   
-  constructor(client, context, options = {}){
+  constructor(context, options = {}){
     this.#collecting = true;
-    this.#client = client;
+    this.#client = global.client;
     this.#context = context;
     this.#options = options;
     this.#timeoutId = null;

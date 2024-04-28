@@ -7,7 +7,7 @@ export default [{
     m.reply("Balas dengan pesan apapun!");
     
     // init MessageCollector
-    const col = new MessageCollector(client, m, {
+    const col = new MessageCollector(m, {
       timeout: 60000
     });
     
