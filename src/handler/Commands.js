@@ -32,8 +32,8 @@ async function loadCommands(commandsDirectory, logs) {
         };
        Commands.set(command?.name, options);
       }
-      return Commands;
     })
+    return Commands;
   } catch (e) {
     console.log(global.clock.info, "[Error]".danger, "Something error on commands handler:".warn,
       "\n", util.format(e).danger);
