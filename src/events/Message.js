@@ -12,7 +12,8 @@ export default {
       const Commands = await loadCommands("./../commands");
       
       // message checking
-      if(m.fromMe) return;
+      if(!m) return
+      if(m?.fromMe) return;
       
       // define message property
       const { 
