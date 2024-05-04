@@ -67,7 +67,6 @@ async function start() {
       const closeReason = new Boom(lastDisconnect?.error)?.output.statusCode;
       if(closeReason == DisconnectReason.badSession) {
         console.log(global.clock.info, "[Session]".main, "Bad session file, Please delete old session and login again.");
-        process.exit(1)
       } else if(closeReason == DisconnectReason.connectionClosed) {
         timeout++
         console.log(global.clock.info, "[Session]".main, "Connection closed, Reconnecting again...");
@@ -78,10 +77,8 @@ async function start() {
         await start()
       } else if(closeReason == DisconnectReason.connectionReplaced) {
         console.log(global.clock.info, "[Session]".main, "Connection replaced, Please turn off another running session to start this session.");
-        process.exit(1)
       } else if(closeReason == DisconnectReason.loggedOut) {
         console.log(global.clock.info, "[Session]".main, "Connection logged out, Please login again and run.");
-        process.exit(1)
       } else if(closeReason == DisconnectReason.restartRequired) {
         timeout++
         console.log(global.clock.info, "[Session]".main, "Connection closed, Restart requiring. Reconnecting again...");
@@ -92,7 +89,6 @@ async function start() {
         await start()
       } else if(closeReason == DisconnectReason.multideviceMismatch) {
         console.log(global.clock.info, "[Session]".main, "Connection closed, Multi device mismatch. Please login again and run.");
-        process.exit(1)
       } else {
         timeout++
         console.log(global.clock.info, "[Session]".main, "Connection opened...");
