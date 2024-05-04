@@ -15,6 +15,7 @@ async function loadCommands(commandsDirectory, logs) {
       const commands = baseCommand.default;
       for(let command of commands) {
         const options = {
+          tag: command?.tag,
           name: command?.name,
           command: command?.command,
           options: {
@@ -34,6 +35,10 @@ async function loadCommands(commandsDirectory, logs) {
             status: command?.cooldown?.status ? command?.cooldown?.status : false,
             duration: command?.cooldown?.duration ? command?.cooldown?.duration : 0,
             message: command?.cooldown?.message ? command?.cooldown?.message : "Please wait *_{time}_* to run this command again!"
+          },
+          limit: {
+          	status: command?.limit?.status ? command?.limit?.status : true,
+              amount: command?.limit?.amount ? command?.limit?.amount : 1
           },
           code: command?.code ? command?.code : () => {}
         };

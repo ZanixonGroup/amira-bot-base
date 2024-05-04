@@ -9,6 +9,7 @@ import path from "path";
 
 // import additional modules
 import MessageCollector from "./../handler/MessageCollector.js";
+import { MessageBuilder } from "./../utils/Builders.js";
 
 export default {
   name: "messages.upsert",
@@ -136,6 +137,7 @@ export default {
           
           // additional modules
           MessageCollector,
+          MessageBuilder,
           path
         }
         

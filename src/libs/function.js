@@ -23,29 +23,6 @@ export default new (class Function {
       this.FormData = FormData;;
    }
 
-   // source code https://github.com/BochilGaming/games-wabot/blob/e4151d33cded4cfa6f1ceabc8558e1678f2a0f53/lib/helper.js#L14
-   __filename(pathURL = import.meta, rmPrefix = platform() !== "win32") {
-      const path = pathURL?.url || pathURL;
-      return rmPrefix
-         ? /file:\/\/\//.test(path)
-            ? fileURLToPath(path)
-            : path
-         : /file:\/\/\//.test(path)
-            ? path
-            : pathToFileURL(path).href;
-   }
-
-   // source code https://github.com/BochilGaming/games-wabot/blob/e4151d33cded4cfa6f1ceabc8558e1678f2a0f53/lib/helper.js#L14
-   __dirname(pathURL) {
-      const dir = this.__filename(pathURL, true);
-      const regex = /\/$/;
-      return regex.test(dir)
-         ? dir
-         : fs.existsSync(dir) && fs.statSync(dir).isDirectory
-            ? path.dirname(dir)
-            : dir.replace(regex, "");
-   }
-
    async dirSize(directory) {
       const files = await fs.readdirSync(directory);
       const stats = files.map((file) =>

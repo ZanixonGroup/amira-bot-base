@@ -1,9 +1,7 @@
-import MessageCollector from "./../handler/MessageCollector.js";
-
 export default [{
   name: "listen",
   command: ["listen"],
-  code: async({ client, m }) => {
+  code: async({ client, m, MessageCollector }) => {
     m.reply("Balas dengan pesan apapun!");
     
     // init MessageCollector
