@@ -1,6 +1,7 @@
 import "./config.js";
 import loadEvents from "./handler/Events.js";
 import loadCommands from "./handler/Commands.js";
+import loadPlugins from "./handler/Plugins.js";
 import { BindClient } from "./libs/serialize.js"
 import {
     makeWASocket,
@@ -43,6 +44,7 @@ async function start() {
   
   await loadEvents(client, "events");
   const Commands = await loadCommands("commands");
+  const Plugins = await loadPlugins("plugins", true);
   
   // session manager
   client.ev.on("creds.update", auth.saveCreds);

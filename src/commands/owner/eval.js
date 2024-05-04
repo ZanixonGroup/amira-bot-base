@@ -1,6 +1,5 @@
 import { format } from "util";
 
-
 export default [{
     name: "eval",
     command: [">>", ">"],
@@ -10,6 +9,7 @@ export default [{
     code: async({
       // client
       Commands,
+      Plugins,
       client,
       rawMessage,
       m,
@@ -49,27 +49,31 @@ export default [{
       command,
       commandOptions,
       isCommand,
+      plugins,
       
       // additional properties
-      __dirname,
+      Func,
+      dirname,
+      filename,
       
       // additional modules
-      MessageCollector
+      MessageCollector,
+      path
     }) => {
-        let evalCmd
-        try {
-            evalCmd = /await/i.test(text) ? eval("(async() => { " + text + " })()") : eval(m.text)
-        } catch (e) {
-            m.reply(format(e))
-        }
-        new Promise(async (resolve, reject) => {
-            try {
-                resolve(evalCmd);
-            } catch (err) {
-                reject(err)
-            }   
-        })
-        ?.then((res) => m.reply(format(res)))
-        ?.catch((err) => m.reply(format(err)))
+      let evalCmd
+      try {
+          evalCmd = /await/i.test(text) ? eval("(async() => { " + text + " })()") : eval(m.text)
+      } catch (e) {
+          m.reply(format(e))
+      }
+      new Promise(async (resolve, reject) => {
+          try {
+              resolve(evalCmd);
+          } catch (err) {
+              reject(err)
+          }   
+      })
+      ?.then((res) => m.reply(format(res)))
+      ?.catch((err) => m.reply(format(err)))
     }
 }]

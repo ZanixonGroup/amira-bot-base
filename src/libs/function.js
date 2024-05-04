@@ -42,8 +42,8 @@ export default new (class Function {
       return regex.test(dir)
          ? dir
          : fs.existsSync(dir) && fs.statSync(dir).isDirectory
-            ? dir.replace(regex, "")
-            : path.dirname(dir);
+            ? path.dirname(dir)
+            : dir.replace(regex, "");
    }
 
    async dirSize(directory) {

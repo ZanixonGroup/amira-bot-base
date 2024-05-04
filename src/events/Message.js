@@ -1,11 +1,11 @@
 import loadCommands from "./../handler/Commands.js";
+import loadPlugins from "./../handler/Plugins.js";
 import { Serialize } from "./../libs/serialize.js"
 import Cooldown from "./../libs/CooldownManager.js"
 import Func from "./../libs/function.js";
+import { dirname, filename } from "desm";
 import util from "util";
 import path from "path";
-import { fileURLToPath } from "url";
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // import additional modules
 import MessageCollector from "./../handler/MessageCollector.js";
@@ -18,6 +18,8 @@ export default {
       const rawMessage = messages;
       const m = await Serialize(global.client, messages[0])
       const Commands = await loadCommands("./../commands");
+      const Plugins = await loadPlugins("./../plugins", true);
+      const sortedPlugins = [...Plugins.values()].sort((a, b) => a.name.localeCompare(b.name));
       
       // message checking
       if(!m) return
@@ -67,6 +69,7 @@ export default {
       const command = Array.from(Commands.values()).find((d) => d?.command?.find((x) => x.toLowerCase() == commandName)) || null;
       const commandOptions = command?.options;
       const isCommand = commandOptions?.nonPrefix ? commandOptions?.nonPrefix : body.startsWith(`${prefix}${commandName}`);
+      const plugins = { ...sortedPlugins.reduce((acc, v) => ({ ...acc, [v.name]: v.code }), {}) };
       //console.log(m, command)
       
       // executor
@@ -84,6 +87,7 @@ export default {
         const options = {
           // client
           Commands,
+          Plugins,
           client,
           rawMessage,
           m,
@@ -123,14 +127,19 @@ export default {
           command,
           commandOptions,
           isCommand,
+          plugins,
           
           // additional properties
-          __dirname,
+          Func,
+          dirname,
+          filename,
           
           // additional modules
-          MessageCollector
+          MessageCollector,
+          path
         }
-        command.code(options);
+        
+        await command.code(options);
       } catch (e) {
         console.log(util.format(e))
       }
