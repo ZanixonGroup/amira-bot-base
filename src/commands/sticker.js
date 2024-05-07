@@ -4,7 +4,6 @@ export default [{
   code: async({ client, m, quoted, mimetype, text }) => {
     try {
       if(!/image|video|webp/i.test(mimetype)) return m.reply("Balas gambar atau video yang ingin dijadikan sticker");
-      m.reply("Tunggu sebentar...")
       const buffer = await quoted.download();
       let exif;
       if(text) {

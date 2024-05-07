@@ -37,17 +37,17 @@ global.exif = {
 
 // alert messages
 global.alertMessage = {
-  owner: "Features can only be accessed owner!",
+  owner: "Features can only be accessed by owner!",
   group: "Features only accessible in group!",
-  private: "Features only accessible private chat!",
+  private: "Features only accessible in private chat!",
   admin: "Features can only be accessed by group admin!",
-  botAdmin: "Bot is not admin, can't use the features!",
-  bot: "Features only accessible by me",
+  botAdmin: "Bot is not admin, you can't use the features!",
+  bot: "Features only accessible by bot",
   media: "Reply media...",
   query: "No Query?",
-  error: "Seems to have encountered an unexpected error, please repeat your command for a while again",
+  error: "Seems to have encountered an unexpected error.",
   quoted: "Reply message...",
   wait: "Wait a minute...",
-  urlInvalid: "Url Invalid",
+  urlInvalid: "Url Invalid!",
   premium: "Premium Only Features!"
 }

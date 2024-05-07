@@ -1,15 +1,23 @@
 export default [{
+  tag: "example",
   name: "test",
   command: ["test","tes"],
-  cooldown: {
-    status: true,
-    duration: 86400000
-  },
-  code: async({ client, m }) => {
-    try {
-      m.reply("work coy!")
-    } catch (e) {
-      console.log(e)
-    }
+  code: async({ client, m, MessageCollector }) => {
+    m.reply("Balas dengan pesan apapun!");
+    
+    // init MessageCollector
+    const col = new MessageCollector(m, {
+      timeout: 60000
+    });
+    
+    // call MessageCollector
+    col.on("collect", async(data) => {
+      m.reply(`${JSON.stringify(data, null, 2)}`);
+      col.exit();
+    })
+    
+    col.on("end", () => {
+      m.reply("Message collector diakhiri!")
+    })
   }
 }]

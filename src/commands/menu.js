@@ -1,28 +1,46 @@
-import fs from "fs";
-
 export default [{
   name: "menu",
   command: ["menu"],
-  code: async({ client, m, remote, dirname, path, MessageBuilder }) => {
+  code: async({ client, m, remote, sender, Commands, MessageBuilder, prefix, upperFirst }) => {
     try {
-      const __dirname = dirname(import.meta.url);
-      const media = fs.readFileSync(path.join(__dirname, "ztrdiamond-icon-low.png"));
-      const mentions = ["6285697103902@s.whatsapp.net"];
-      
+      let listCommand = "";
+      let commandCategory = {}
+      Array.from(Commands.values()).map(d => {
+        commandCategory[d.tag] = Array.from(Commands.values()).filter(cmd => cmd.tag === d.tag);
+      });
+      for(let tag in commandCategory) {
+        if(tag === "hidden") return;
+        let commands = commandCategory[tag];
+        if(commands) {
+          let filteredCommand = commands.filter(d => !d.disable.status).map(cmd => {
+            let isPremium = cmd.options.isPremium ? "🄿" : "";
+            return `│・${prefix + cmd.command[0]} ${isPremium}`;
+          })
+          let list = filteredCommand.sort();
+          listCommand += `╭─❨ *${upperFirst(tag)}* ❩\n`;
+          listCommand += list.join("\n") + "\n";
+          listCommand += `╰──────────────────・\n\n`;
+          console.log(listCommand)
+        }
+      }
       const message = new MessageBuilder()
-        .setCaption("Testing thumbnail")
-        .setMentions(mentions)
-        .setImage(media)
-        .setMimetype("image/png")
-        .setThumbnailTitle("Title nya")
-        .setThumbnailBody("Body nya")
+        .setText(`Halo @${sender.split("@")[0]}, Amira disini!
+
+${listCommand}`)
+        .setMentions([sender])
+        .setThumbnailMediaUrl("https://github.com/ZanixonGroup")
+        .setThumbnailTitle("Amira Bot Base | WhatsApp Bot")
+        .setThumbnailBody("Copyright © ZanixonGroup 2024 - All Right Reserved")
         .setThumbnailLarge()
-        .setThumbnailImage("https://telegra.ph/file/d7109be0db36e7cbd56a8.jpg")
-        .setThumbnailUrl("https://contoh.com")
+        .setThumbnailImage("https://telegra.ph/file/54cbfb6c7f6b2d69f85cd.jpg")
+        .setThumbnailUrl("https://github.com/ZanixonGroup")
+        .setForwardingScore(9999)
+        .setForwarded(true)
+        .setNewsletterJid("120363183632297680@newsletter")
+        .setNewsletterName("Developed by Zanixon Group™")
+        .setNewsletterServerMessageId(125)
         .build()
-        
-      console.log(message)
-      client.sendMessage(remote, message);
+      client.sendMessage(remote, message, { quoted: m });
     } catch (e) {
       console.log(e)
     }

@@ -3,9 +3,11 @@ import Function from "./function.js"
 import { writeExif } from "./sticker.js"
 
 import baileys, { prepareWAMessageMedia } from "@whiskeysockets/baileys"
-const { jidNormalizedUser, proto, areJidsSameUser, extractMessageContent, generateWAMessageFromContent, downloadContentFromMessage, toBuffer, getDevice } = baileys
+const { jidNormalizedUser, proto, areJidsSameUser, extractMessageContent, generateWAMessageFromContent, downloadContentFromMessage, toBuffer, getDevice, getContentType, generateWAMessage } = baileys
 import fs from "fs"
+import axios from "axios"
 import path from "path"
+import { fileTypeFromBuffer } from 'file-type'
 import { parsePhoneNumber } from "libphonenumber-js"
 import { fileURLToPath } from "url"
 import Crypto from 'crypto'
@@ -64,7 +66,104 @@ export function BindClient({ client, store }) {
             return (v?.name || v?.subject || v?.pushName || v?.verifiedName || (parsePhoneNumber('+' + id.replace("@s.whatsapp.net", "")).format("INTERNATIONAL")))
          }
       },
+      
+      getFile: {
+          /**
+           * getBuffer hehe
+           * @param {fs.PathLike} PATH 
+           * @param {Boolean} saveToFile
+           */
+          async value(PATH, saveToFile = false) {
+              let res, filename
+              const data = Buffer.isBuffer(PATH) ? PATH : PATH instanceof ArrayBuffer ? PATH.toBuffer() : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await (res = await axios.get(PATH, { responseType: "arraybuffer" })).data : fs.existsSync(PATH) ? (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
+              if (!Buffer.isBuffer(data)) throw new TypeError('Result is not a buffer')
+              const type = await fileTypeFromBuffer(data) || {
+                  mime: 'application/octet-stream',
+                  ext: '.bin'
+              }
+              if (data && saveToFile && !filename) (filename = path.join(__dirname, '../tmp/' + new Date * 1 + '.' + type.ext), await fs.promises.writeFile(filename, data))
+              return {
+                  res,
+                  filename,
+                  ...type,
+                  data,
+                  deleteFile() {
+                      return filename && fs.promises.unlink(filename)
+                  }
+              }
+          },
+          enumerable: true
+      },
+      
+      sendFile: {
+          /*
+           * Send Media/File with Automatic Type Specifier
+           * @param {String} jid
+           * @param {String|Buffer} path
+           * @param {String} filename
+           * @param {String} caption
+           * @param {import('@adiwajshing/baileys').proto.WebMessageInfo} quoted
+           * @param {Boolean} ptt
+           * @param {Object} options
+           */
+          async value(jid, path, filename = '', caption = '', quoted, ptt = false, options = {}) {
+              let type = await client.getFile(path, true)
+              let { res, data: file, filename: pathFile } = type
+              if (res && res.status !== 200 || file.length <= 65536) {
+                  try { throw { json: JSON.parse(file.toString()) } }
+                  catch (e) { if (e.json) throw e.json }
+              }
+              const fileSize = fs.statSync(pathFile).size / 1024 / 1024
+              if (fileSize >= 100) throw new Error('File size is too big!')
+              let opt = {}
+              if (quoted) opt.quoted = quoted
+              if (!type) options.asDocument = true
+              let mtype = '', mimetype = options.mimetype || type.mime, convert
+              if (/webp/.test(type.mime) || (/image/.test(type.mime) && options.asSticker)) mtype = 'sticker'
+              else if (/image/.test(type.mime) || (/webp/.test(type.mime) && options.asImage)) mtype = 'image'
+              else if (/video/.test(type.mime)) mtype = 'video'
+              else if (/audio/.test(type.mime)) (
+                  convert = await toAudio(file, type.ext),
+                  file = convert.data,
+                  pathFile = convert.filename,
+                  mtype = 'audio',
+                  mimetype = options.mimetype || 'audio/ogg; codecs=opus'
+              )
+              else mtype = 'document'
+              if (options.asDocument) mtype = 'document'
 
+              delete options.asSticker
+              delete options.asLocation
+              delete options.asVideo
+              delete options.asDocument
+              delete options.asImage
+
+              let message = {
+                  ...options,
+                  caption,
+                  ptt,
+                  [mtype]: { url: pathFile },
+                  mimetype,
+                  fileName: filename || pathFile.split('/').pop()
+              }
+              /**
+               * @type {import('@adiwajshing/baileys').proto.WebMessageInfo}
+               */
+              let m
+              try {
+                  m = await client.sendMessage(jid, message, { ...opt, ...options, ...ephemeral })
+              } catch (e) {
+                  console.error(e)
+                  m = null
+              } finally {
+                  if (!m) m = await client.sendMessage(jid, { ...message, [mtype]: file }, { ...opt, ...options, ...ephemeral })
+                  file = null // releasing the memory
+                  return m
+              }
+          },
+          enumerable: true
+      },
+      
       sendContact: {
          async value(jid, number, quoted, options = {}) {
             let list = []
@@ -234,6 +333,22 @@ export function BindClient({ client, store }) {
             return m
          },
          enumerable: true
+      },
+      
+      generateMessage: {
+        async value(jid, message, quoted = {}, options = {}) {
+          let generate = await generateWAMessage(jid, message, quoted)
+          const type = getContentType(generate.message)
+          if ('contextInfo' in message) generate.message[type].contextInfo = {
+            ...generate.message[type].contextInfo,
+            ...message.contextInfo
+          }
+          if ('contextInfo' in options) generate.message[type].contextInfo = {
+            ...generate.message[type].contextInfo,
+            ...options.contextInfo
+          }
+          return await generate;
+        }
       }
    })
 

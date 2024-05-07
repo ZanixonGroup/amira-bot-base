@@ -2,7 +2,7 @@ import { format } from "util";
 
 export default [{
     name: "eval",
-    command: [">>", ">"],
+    command: [">>", ">","eval"],
     options: {
       nonPrefix: true
     },
@@ -50,6 +50,7 @@ export default [{
       commandOptions,
       isCommand,
       plugins,
+      alertMessage,
       
       // additional properties
       Func,
@@ -58,9 +59,15 @@ export default [{
       
       // additional modules
       MessageCollector,
-      path
+      MessageBuilder,
+      path,
+      fs
     }) => {
+      let __filename = filename(import.meta.url)
+      let __dirname = dirname(import.meta.url)
+      
       let evalCmd
+      if(!text) return m.reply("Mana kode yang mau di eval?");
       try {
           evalCmd = /await/i.test(text) ? eval("(async() => { " + text + " })()") : eval(m.text)
       } catch (e) {

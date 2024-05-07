@@ -1,3 +1,10 @@
+/*
+    Baileys loadEvents by github.com/ZTRdiamond
+    ------------------------------------------------------
+    Source: https://github.com/ZanixonGroup/amira-bot-base
+    | Don't delete this credit!
+*/
+
 import "./../config.js";
 import * as glob from "glob";
 import path from "path";

@@ -1,5 +1,12 @@
-const cooldown = new Map()
+/*
+    Baileys CooldownManager by github.com/ZTRdiamond
+    ------------------------------------------------------
+    Inspired from @mengkodingan/ckptw
+    Source: https://github.com/ZanixonGroup/amira-bot-base
+    | Don't delete this credit!
+*/
 
+const cooldown = new Map()
 class Cooldown {
   #milliseconds
   #cooldown

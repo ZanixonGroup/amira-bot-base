@@ -1,13 +1,15 @@
 import loadCommands from "./../handler/Commands.js";
 import loadPlugins from "./../handler/Plugins.js";
 import { Serialize } from "./../libs/serialize.js"
-import Cooldown from "./../libs/CooldownManager.js"
 import Func from "./../libs/function.js";
 import { dirname, filename } from "desm";
+import fs from "fs";
 import util from "util";
 import path from "path";
+import lodash from "lodash";
 
 // import additional modules
+import Cooldown from "./../libs/CooldownManager.js"
 import MessageCollector from "./../handler/MessageCollector.js";
 import { MessageBuilder } from "./../utils/Builders.js";
 
@@ -32,7 +34,8 @@ export default {
         isBaileys,
         device,
         isGroup,
-        isMedia
+        isMedia,
+        isOwner
       } = m;
       const quoted = m?.isQuoted ? m?.quoted : m;
       
@@ -44,11 +47,12 @@ export default {
       const mimetype = quoted?.msg?.mimetype || m?.msg?.mimetype;
       
       const isQuoted = m?.isQuoted;
-      // @ isGroup defined on line 16
-      // @ isMedia defined on line 16 
+      // @ isOwner defined on line 30
+      // @ isGroup defined on line 30
+      // @ isMedia defined on line 30
       
       // @user property
-      // @ from defined on line 16 
+      // @ from defined on line 30
       const sender = m?.key?.participant || m?.key?.remoteJid;
       const remote = m?.key?.remoteJid;
       const pushName = m?.pushName;
@@ -65,18 +69,49 @@ export default {
       const isBotAdmin = isGroup ? groupAdmins.includes(client.user.id.split(":")[0]) : false;
       
       // @command property 
-      const prefix = m?.prefix;
+      const prefix = (m?.prefix.length > 0) ? m?.prefix : ".";
       const commandName = m?.command;
       const command = Array.from(Commands.values()).find((d) => d?.command?.find((x) => x.toLowerCase() == commandName)) || null;
       const commandOptions = command?.options;
-      const isCommand = commandOptions?.nonPrefix ? commandOptions?.nonPrefix : body.startsWith(`${prefix}${commandName}`);
+      const isCommand = commandOptions?.nonPrefix ? (body.startsWith(`${prefix}${commandName}`) || commandOptions?.nonPrefix) : body.startsWith(`${prefix}${commandName}`);
       const plugins = { ...sortedPlugins.reduce((acc, v) => ({ ...acc, [v.name]: v.code }), {}) };
-      //console.log(m, command)
       
       // executor
       try {
         if(!command) return; // check command has null value
         if(!isCommand) return; // check message is a valid command
+        
+        // message permission checking
+        const alertMessage = global.alertMessage;
+        if(commandOptions?.isOwner && !m?.isOwner) {
+          return m.reply(`${alertMessage["owner"]}`);
+        }
+        
+        if(commandOptions?.isBot && !m?.fromMe) {
+          return m.reply(`${alertMessage["bot"]}`);
+        }
+        
+        if(commandOptions?.isPrivate && m?.isGroup) {
+          return m.reply(`${alertMessage["private"]}`);
+        }
+        
+        if(commandOptions?.isGroup && !m?.isGroup) {
+          return m.reply(`${alertMessage["group"]}`);
+        }
+        
+        if(commandOptions?.isBotAdmin && !isBotAdmin) {
+          if(!m?.isGroup) return m.reply(`${alertMessage["group"]}`);
+          return m.reply(`${alertMessage["botAdmin"]}`);
+        }
+        
+        if(commandOptions?.isAdmin && !isAdmin) {
+          if(!m?.isGroup) return m.reply(`${alertMessage["group"]}`);
+          return m.reply(`${alertMessage["admin"]}`);
+        }
+        
+        if(commandOptions?.isPremium && false) {
+          return m.reply(`${alertMessage["premium"]}`);
+        }
         
         // cooldown manager 
         if(command?.cooldown?.status) {
@@ -86,7 +121,7 @@ export default {
         }
         
         const options = {
-          // client
+          // client properties
           Commands,
           Plugins,
           client,
@@ -94,7 +129,7 @@ export default {
           m,
           quoted,
           
-          // message property 
+          // message properties
           args,
           text,
           body,
@@ -104,13 +139,13 @@ export default {
           isMedia,
           isBaileys,
           
-          // user property
+          // user properties
           from,
           sender,
           remote,
           pushName,
           
-          // group property
+          // group properties
           isGroup,
           groups,
           metadata,
@@ -122,31 +157,49 @@ export default {
           isSuperAdmin,
           isBotAdmin,
           
-          // command property
+          // command properties
           prefix,
           commandName,
           command,
           commandOptions,
           isCommand,
           plugins,
+          alertMessage,
           
           // additional properties
           Func,
           dirname,
           filename,
+          upperFirst: (q) => lodash.upperFirst(q),
           
           // additional modules
           MessageCollector,
           MessageBuilder,
-          path
+          path,
+          fs
         }
         
+        /* still testing!
+        if(command.command.includes("always_execute")) {
+          let alwaysExecuteCommand = Array.from(Commands.values()).filter(data => data.name.includes("always_execute"));
+          for(let cmd of alwaysExecuteCommand) {
+            await cmd.code(options);
+          }
+          return;
+        } else {
+          await m.reply(`${alertMessage["wait"]}`);
+          await command.code(options);
+        }
+        */
+        
+        await m.reply(`${alertMessage["wait"]}`);
         await command.code(options);
       } catch (e) {
-        console.log(util.format(e))
+        await m.reply(`${global.alertMessage["error"]}`);
+        return console.log(`Error on command "${command.name}":`, util.format(e))
       }
     } catch (e) {
-      console.log(util.format(e))
+      return console.log("Error on command executor:", util.format(e))
     }
   }
 }

@@ -1,3 +1,11 @@
+/*
+    Baileys MessageCollector by github.com/ZTRdiamond
+    ------------------------------------------------------
+    Inspired from @mengkodingan/ckptw
+    Source: https://github.com/ZanixonGroup/amira-bot-base
+    | Don't delete this credit!
+*/
+
 import EventEmitter from 'events';
 import { Serialize } from "../libs/serialize.js";
 

@@ -1,7 +1,7 @@
 {
-  "name": "amira-bot",
-  "version": "0.3.25",
-  "description": "Whatsapp bot assitant",
+  "name": "amira-bot-base",
+  "version": "0.3.64",
+  "description": "Simple whatsapp bot using baileys with a ton of features",
   "type": "module",
   "main": "bot.js",
   "scripts": {
@@ -12,7 +12,7 @@
   "author": "ZanixonGroup",
   "license": "ISC",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.0",
+    "@whiskeysockets/baileys": "^6.7.2",
     "axios": "^1.6.8",
     "baileys": "^6.7.0",
     "cheerio": "^1.0.0-rc.12",

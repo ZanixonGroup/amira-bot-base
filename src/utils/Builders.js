@@ -1,3 +1,10 @@
+/*
+    Baileys MessageBuilder by github.com/ZTRdiamond
+    ------------------------------------------------------
+    Source: https://github.com/ZanixonGroup/amira-bot-base
+    | Don't delete this credit!
+*/
+
 import _ from "lodash";
 
 export class MessageBuilder {
@@ -53,6 +60,16 @@ export class MessageBuilder {
     return this;
   }
   
+  setForwardingScore(score = 5) {
+    _.set(this.message, "contextInfo.forwardingScore", score);
+    return this;
+  }
+  
+  setForwarded(status = false) {
+    _.set(this.message, "contextInfo.isForwarded", status);
+    return this;
+  }
+  
   setThumbnailTitle(title) {
     _.set(this.message, 'contextInfo.externalAdReply.title', title);
     return this;
@@ -60,6 +77,16 @@ export class MessageBuilder {
   
   setThumbnailBody(body) {
     _.set(this.message, 'contextInfo.externalAdReply.body', body);
+    return this;
+  }
+  
+  setThumbnailAds(ads = false) {
+    _.set(this.message, 'contextInfo.externalAdReply.showAdAttribution', ads);
+    return this;
+  }
+  
+  setThumbnailMediaUrl(url) {
+    _.set(this.message, 'contextInfo.externalAdReply.mediaUrl', url);
     return this;
   }
   
@@ -92,8 +119,23 @@ export class MessageBuilder {
     return this;
   }
   
-  setThumbnailPreviewtype(type = 0) {
+  setThumbnailPreviewtype(type = "PHOTO") {
     _.set(this.message, 'contextInfo.externalAdReply.previewType', type);
+    return this;
+  }
+  
+  setNewsletterJid(jid) {
+    _.set(this.message, 'contextInfo.forwardedNewsletterMessageInfo.newsletterJid', jid);
+    return this;
+  }
+  
+  setNewsletterName(name) {
+    _.set(this.message, 'contextInfo.forwardedNewsletterMessageInfo.newsletterName', name);
+    return this;
+  }
+  
+  setNewsletterServerMessageId(id = 125) {
+    _.set(this.message, 'contextInfo.forwardedNewsletterMessageInfo.serverMessageId', id);
     return this;
   }
   
