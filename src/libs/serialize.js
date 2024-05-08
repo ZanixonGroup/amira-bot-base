@@ -23,6 +23,8 @@ export function BindClient({ client, store }) {
    }
 
    const bind = Object.defineProperties(client, {
+      db: { value: db },
+      
       getContentType: {
          value(content) {
             if (content) {

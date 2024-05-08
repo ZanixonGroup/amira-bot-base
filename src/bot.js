@@ -12,6 +12,7 @@ import {
 import Pino from "pino";
 import { Boom } from "@hapi/boom";
 import path from "path";
+import { ZanixonDB } from "zanixon.db";
 
 const store = makeInMemoryStore({ logger: Pino({ level: "fatal" }).child({ level: "fatal" }) })
 const isPairing = process.argv.includes("--pairing");
@@ -26,9 +27,19 @@ async function start() {
     logger: Pino({ level: "fatal" }).child({ level: "fatal" })
   });
   
+  // setup database
+  const db = new ZanixonDB({
+    directory: "./database",
+    showLogs: true,
+    tables: {
+      "user": "/user/users.json",
+      "subscription": "/user/subscriptions.json"
+    }
+  });
+  
   // bindings
   store.bind(client.ev);
-  await BindClient({client, store});
+  await BindClient({client, store, db});
   global.client = client;
   global.store = store;
   
