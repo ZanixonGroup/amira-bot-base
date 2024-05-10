@@ -19,7 +19,7 @@ export default {
     try {
       const client = global.client;
       const rawMessage = messages;
-      const m = await Serialize(global.client, messages[0])
+      const m = await Serialize(global.client, messages[0], global.store)
       const Commands = await loadCommands("./../commands");
       const Plugins = await loadPlugins("./../plugins", true);
       const sortedPlugins = [...Plugins.values()].sort((a, b) => a.name.localeCompare(b.name));
@@ -58,8 +58,8 @@ export default {
       const pushName = m?.pushName;
       
       // @group property 
-      const groups = global.store.groupMetadata;
-      const metadata = m?.metadata || {};
+      const groups = isGroup ? await client.groups() : {};
+      const metadata = groups[m.from] || {};
       const participants = metadata?.participants || [{ id: sender, admin: null }];
       const participantIds = participants.map(d => d.id);
       const groupAdmins = isGroup ? participants.filter(d => d.admin == "admin" || d.admin == "superadmim").map(d => d.id) : [];

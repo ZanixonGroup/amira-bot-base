@@ -3,16 +3,20 @@ import loadEvents from "./handler/Events.js";
 import loadCommands from "./handler/Commands.js";
 import loadPlugins from "./handler/Plugins.js";
 import { BindClient } from "./libs/serialize.js"
-import {
+import Func from "./libs/function.js";
+import baileys, {
     makeWASocket,
     useMultiFileAuthState,
     DisconnectReason,
     makeInMemoryStore
 } from "@whiskeysockets/baileys";
+const { jidNormalizedUser } = baileys;
 import Pino from "pino";
 import { Boom } from "@hapi/boom";
 import path from "path";
 import { ZanixonDB } from "zanixon.db";
+import { dirname } from "desm";
+const __dirname = dirname(import.meta.url);
 
 const store = makeInMemoryStore({ logger: Pino({ level: "fatal" }).child({ level: "fatal" }) })
 const isPairing = process.argv.includes("--pairing");
@@ -39,9 +43,14 @@ async function start() {
   
   // bindings
   store.bind(client.ev);
+  client.ev.on("contacts.update", (update) => {
+    for(let contact of update) {
+      let id = jidNormalizedUser(contact.id);
+      if(store && store.contacts) store.contacts[id] = { id, name: contact.notify };
+    }
+  });
+  
   await BindClient({client, store, db});
-  global.client = client;
-  global.store = store;
   
   // pairing login
   if(isPairing && !client.authState.creds.registered) {
@@ -57,6 +66,12 @@ async function start() {
   await loadEvents(client, "events");
   const Commands = await loadCommands("commands");
   const Plugins = await loadPlugins("plugins", true);
+  
+//   clear session folder
+//   Func.clearSession("session")
+//   setInterval(() => {
+//   	Func.clearSession("session")
+//   }, 60 * 1000)
   
   // session manager
   client.ev.on("creds.update", auth.saveCreds);
@@ -113,6 +128,8 @@ async function start() {
     }
   });
   
+  global.client = client;
+  global.store = store;
 }
 
 start()

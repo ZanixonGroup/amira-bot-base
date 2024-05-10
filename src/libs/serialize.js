@@ -14,15 +14,18 @@ import Crypto from 'crypto'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-export function BindClient({ client, store }) {
-   delete store.groupMetadata
-
+export function BindClient({ client, store, db }) {
+   delete store.groupMetadata;
+   
    // Combining Store to Client
    for (let v in store) {
-      client[v] = store[v]
+      client[v] = store[v];
    }
 
+   
    const bind = Object.defineProperties(client, {
+      groups: { async value() { return await client.groupFetchAllParticipating() } },
+      
       db: { value: db },
       
       getContentType: {
@@ -358,7 +361,7 @@ export function BindClient({ client, store }) {
 }
 
 
-export async function Serialize(client, msg) {
+export async function Serialize(client, msg, store) {
    const m = {}
    const botNumber = client.decodeJid(client.user?.id)
 
@@ -375,19 +378,21 @@ export async function Serialize(client, msg) {
       m.device = getDevice(m.id)
       m.isBaileys = m.id.startsWith("BAE5")
       m.isGroup = m.from.endsWith("@g.us")
-      m.participant = !m.isGroup ? false : m.key.participant
+      m.participant = jidNormalizedUser(msg?.participant || m.key.participant) || false
       m.sender = client.decodeJid(m.fromMe ? client.user.id : m.isGroup ? m.participant : m.from)
    }
-
+   
    m.pushName = msg.pushName
    m.isOwner = m.sender && [...global.bot.owner, botNumber.split`@`[0]].includes(m.sender.replace(/\D+/g, ""))
+   /*
    if (m.isGroup) {
-      m.metadata = await client.groupMetadata(m.from)
+      m.metadata = groups[m.from]
       m.admins = (m.metadata.participants.reduce((memberAdmin, memberNow) => (memberNow.admin ? memberAdmin.push({ id: memberNow.id, admin: memberNow.admin }) : [...memberAdmin]) && memberAdmin, []))
       m.isAdmin = !!m.admins.find((member) => member.id === m.sender)
       m.isBotAdmin = !!m.admins.find((member) => member.id === botNumber)
    }
-
+   */
+   
    if (m.message) {
       m.type = client.getContentType(m.message) || Object.keys(m.message)[0]
       m.msg = extractMessageContent(m.message[m.type]) || m.message[m.type]
@@ -455,17 +460,18 @@ export async function Serialize(client, msg) {
          m.quoted.device = getDevice(m.quoted.id)
          m.quoted.isBaileys = m.quoted.id.startsWith("BAE5")
          m.quoted.isGroup = m.quoted.from.endsWith("@g.us")
-         m.quoted.participant = m.quoted.key.participant
          m.quoted.sender = client.decodeJid(m.msg?.contextInfo?.participant)
 
          m.quoted.isOwner = m.quoted.sender && [...global.bot.owner, botNumber.split`@`[0]].includes(m.quoted.sender.replace(/\D+/g, ""))
+         /*
          if (m.quoted.isGroup) {
-            m.quoted.metadata = await client.groupMetadata(m.quoted.from)
+            m.quoted.metadata = groups[m.quoted.from]
             m.quoted.admins = (m.quoted.metadata.participants.reduce((memberAdmin, memberNow) => (memberNow.admin ? memberAdmin.push({ id: memberNow.id, admin: memberNow.admin }) : [...memberAdmin]) && memberAdmin, []))
             m.quoted.isAdmin = !!m.quoted.admins.find((member) => member.id === m.quoted.sender)
             m.quoted.isBotAdmin = !!m.quoted.admins.find((member) => member.id === botNumber)
          }
-
+         */
+         
          m.quoted.mentions = m.quoted.msg?.contextInfo?.mentionedJid || []
          m.quoted.body = m.quoted.msg?.text || m.quoted.msg?.caption || m.quoted?.message?.conversation || m.quoted.msg?.selectedButtonId || m.quoted.msg?.singleSelectReply?.selectedRowId || m.quoted.msg?.selectedId || m.quoted.msg?.contentText || m.quoted.msg?.selectedDisplayText || m.quoted.msg?.title || m.quoted?.msg?.name || ""
          m.quoted.prefix = global.bot.prefix.test(m.quoted.body) ? m.quoted.body.match(global.bot.prefix)[0] : "#"
