@@ -55,11 +55,21 @@ class MessageCollector {
       this.exit();
     }, ms);
   }
+  
+  collected() {
+    clearTimeout(this.#timeoutId);
+    this.#collecting = false;
+    this.#event.emit("end", {
+      status: "collected"
+    });
+  }
 
   exit() {
     clearTimeout(this.#timeoutId);
     this.#collecting = false;
-    if(this.#messageCount === 0) { this.#event.emit('end') }
+    this.#event.emit('end', {
+      status: "exit"
+    })
   }
 
   on(event, listener) {

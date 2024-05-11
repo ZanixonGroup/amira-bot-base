@@ -12,10 +12,11 @@ export default [{
     // call MessageCollector
     col.on("collect", async(data) => {
       m.reply(`${JSON.stringify(data, null, 2)}`);
-      col.exit();
+      col.collected();
     })
     
-    col.on("end", () => {
+    col.on("end", ({ status }) => {
+      if(status === "collected") return;
       m.reply("Message collector diakhiri!")
     })
   }

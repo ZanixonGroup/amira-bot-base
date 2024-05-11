@@ -13,6 +13,7 @@ import Cooldown from "./../libs/CooldownManager.js"
 import MessageCollector from "./../handler/MessageCollector.js";
 import { MessageBuilder } from "./../utils/Builders.js";
 
+let isLoaded = false;
 export default {
   name: "messages.upsert",
   code: async({ messages }) => {
@@ -23,6 +24,11 @@ export default {
       const Commands = await loadCommands("./../commands");
       const Plugins = await loadPlugins("./../plugins", true);
       const sortedPlugins = [...Plugins.values()].sort((a, b) => a.name.localeCompare(b.name));
+      
+      if(!isLoaded) {
+        await client.db.set("metadata", await client.groups(), "groups")
+        isLoaded = true;
+      }
       
       // message checking
       if(!m) return
@@ -58,7 +64,7 @@ export default {
       const pushName = m?.pushName;
       
       // @group property 
-      const groups = isGroup ? await client.groups() : {};
+      const groups = isGroup ? await client.db.get("metadata", "groups") : {};
       const metadata = groups[m.from] || {};
       const participants = metadata?.participants || [{ id: sender, admin: null }];
       const participantIds = participants.map(d => d.id);
