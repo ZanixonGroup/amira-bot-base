@@ -1,6 +1,6 @@
 {
   "name": "amira-bot-base",
-  "version": "0.3.72",
+  "version": "0.3.73",
   "description": "Simple whatsapp bot using baileys with a ton of features",
   "type": "module",
   "main": "bot.js",

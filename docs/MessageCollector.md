@@ -50,9 +50,15 @@ export default [{
     
     col.on("collect", async(msg) => {
       m.reply(`Message collected: ${msg.message}`);
+      col.collected()
     }
   }
 }]
+```
+
+```js
+col.collected() // exit collector with status collected
+col.exit() // exit collector with status exit
 ```
 
 #### Output example:
@@ -79,6 +85,7 @@ export default [{
     
     col.on("collect", async(msg) => {
       m.reply(`Pesan di dapat: ${msg.message}`);
+      col.collected()
     }
     
     col.on("end", async(res) => {
@@ -90,7 +97,7 @@ export default [{
 ```
 
 #### Output example:
-```
+```js
 {
   status: String // "exit" or "collected" status
 }
