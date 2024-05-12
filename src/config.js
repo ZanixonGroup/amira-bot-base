@@ -11,7 +11,13 @@ global.bot = {
   sessionName: "session",
   prefix: /^[.]/i
 }
-global.clock = moment().tz("Asia/Jakarta").format("DD-MM-YY HH:mm:ss");
+Object.defineProperty(global, 'clock', {
+  get: function() {
+    return moment(Date.now()).tz("Asia/Jakarta").format("DD-MM-YY HH:mm:ss");
+  },
+  enumerable: true,
+  configurable: true
+});
 
 // beautify logs
 colors.setTheme({
