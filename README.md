@@ -1,4 +1,4 @@
-![Amira Bot Base](https://telegra.ph/file/54cbfb6c7f6b2d69f85cd.jpg)
+![Amira Bot Base](https://raw.githubusercontent.com/ZanixonGroup/amira-bot-base/master/assets/amira-md.png)
 
 # Amira Bot Base
 Amira bot base is a chatbot base that has many features in it to make development easier and faster, Amira bot has a base with clean, neat and structured code. We offer features that can make it easier for developers to create their whatsapp bots easily using a good command handling system as well as other additional handlers such as event handlers, plugins handlers and much more.
