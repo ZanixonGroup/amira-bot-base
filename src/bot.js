@@ -36,6 +36,7 @@ async function start() {
     directory: "./database",
     showLogs: true,
     tables: {
+      "groups": "/temp/groupsMetadata.json",
       "user": "/user/users.json",
       "subscription": "/user/subscriptions.json"
     }
