@@ -20,6 +20,7 @@ async function loadCommands(commandsDirectory, logs) {
     files.forEach(async (file) => {
       const baseCommand = await import(file);
       const commands = baseCommand.default;
+      if(!commands) return logs ? console.log(global.clock.info, "[ERROR]".danger, "Command error:".warn,"\n", `Undefined reading commands on path "${file}", there's no code in the command file!`.danger) : null;
       for(let command of commands) {
         if(!command?.command) return logs ? console.log(global.clock.info, "[ERROR]".danger, "Command error:".warn,"\n", `Undefined command trigger at path "${file}" location, please fix it to load the command!`.danger) : null;
         const options = {

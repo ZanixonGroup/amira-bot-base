@@ -86,6 +86,7 @@ export default {
       try {
         if(!command) return; // check command has null value
         if(!isCommand) return; // check message is a valid command
+        await client.readMessages([m.key]);
         
         // message permission checking
         const alertMessage = global.alertMessage;
@@ -173,6 +174,7 @@ export default {
           alertMessage,
           
           // additional properties
+          logs: global.logs,
           Func,
           dirname,
           filename,
@@ -197,6 +199,7 @@ export default {
           await command.code(options);
         }
         */
+        
         
         await m.reply(`${alertMessage["wait"]}`);
         await command.code(options);

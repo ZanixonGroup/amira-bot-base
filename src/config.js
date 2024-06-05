@@ -1,6 +1,7 @@
 import colors from "colors";
 import moment from "moment-timezone";
 import { fileURLToPath } from 'url';
+import { format } from "util";
 
 // main configs
 global.botNumber = "62856971039021";
@@ -56,4 +57,26 @@ global.alertMessage = {
   wait: "Wait a minute...",
   urlInvalid: "Url Invalid!",
   premium: "Premium Only Features!"
+}
+
+global.logs = {
+  error: (path, logs) => {
+    if(!logs) return;
+    console.log(global.clock.info, "[ERROR]".danger, `location: ${filename(path)}`.warn,
+    "\n" + format(logs).danger);
+  },
+  warn: (path, logs) => {
+    if(!logs) return;
+    console.log(global.clock.info, "[WARN]".warn, `location: ${filename(path)}`.warn,
+    "\n" + format(logs).warn);
+  },
+  commandError: (path, m = {}, logs) => {
+    if(!logs) return;
+    console.log(global.clock.info, "[COMMAND ERROR]".danger, `location: ${filename(path)}`.warn,
+    "\n" + "Sender: ".info + m?.sender,
+    "\n" + "Command: ".info + m?.command,
+    "\n" + "Body: ".info + m?.body,
+    "\n" + "Logs: ".info + format(logs).danger);
+  },
+
 }

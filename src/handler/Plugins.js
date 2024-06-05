@@ -20,6 +20,7 @@ async function loadPlugins(pluginsDirectory, logs) {
     files.forEach(async (file) => {
       const basePlugin = await import(file);
       const plugins = basePlugin.default;
+      if(!plugins) return logs ? console.log(global.clock.info, "[ERROR]".danger, "Plugin error:".warn,"\n", `Undefined reading plugins on path "${file}", there's no code in the plugin file!`.danger) : null;
       for(let plugin of plugins) {
         if(!plugin?.name) return logs ? console.log(global.clock.info, "[ERROR]".danger, "Plugin error:".warn,"\n", `Undefined plugin name at path "${file}" location, please fix it to load the plugin!`.danger) : null;
         const options = {
