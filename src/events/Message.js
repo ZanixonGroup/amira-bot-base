@@ -68,11 +68,11 @@ export default {
       const metadata = groups[m.from] || {};
       const participants = metadata?.participants || [{ id: sender, admin: null }];
       const participantIds = participants.map(d => d.id);
-      const groupAdmins = isGroup ? participants.filter(d => d.admin == "admin" || d.admin == "superadmim").map(d => d.id) : [];
+      const groupAdmins = isGroup ? participants.filter(d => d.admin == "admin" || d.admin == "superadmin").map(d => d.id) : [];
       const groupSuperAdmin = isGroup ? participants.filter(d => d.admin == "superadmin").map(d => d.id) : [];
       const isAdmin = isGroup ? groupAdmins.includes(sender) : false;
       const isSuperAdmin = isGroup ? groupSuperAdmin.includes(sender) : false;
-      const isBotAdmin = isGroup ? groupAdmins.includes(client.user.id.split(":")[0]) : false;
+      const isBotAdmin = isGroup ? groupAdmins.includes(client.user.id.split(":")[0] + "@s.whatsapp.net") : false;
       
       // @command property 
       const prefix = (m?.prefix.length > 0) ? m?.prefix : ".";
