@@ -5,7 +5,7 @@ import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { platform } from "os";
 import moment from "moment-timezone";
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 import { format } from "util";
 import FormData from "form-data"
 import mimes from "mime-types"
