@@ -2,6 +2,7 @@ import colors from "colors";
 import moment from "moment-timezone";
 import { fileURLToPath } from 'url';
 import { format } from "util";
+import { filename } from "desm";
 
 // main configs
 global.botNumber = "62856971039021";
