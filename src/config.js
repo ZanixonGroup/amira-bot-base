@@ -9,7 +9,7 @@ global.botNumber = "62856971039021";
 global.bot = {
   public: true,
   antiCall: true,
-  owner: ["6285697103902", "6289520306297", "6283897390164"],
+  owner: ["6285236216063"],
   sessionName: "session",
   prefix: /^[.]/i
 }
